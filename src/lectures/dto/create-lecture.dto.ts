@@ -1,8 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { CourseDto } from 'src/courses/dto/course.dto';
-import { LectureDto } from './lecture.dto';
 
 export class CreateLectureDto {
   @ApiProperty()
@@ -26,8 +25,8 @@ export class CreateLectureDto {
   @Type(() => CourseDto)
   course?: CourseDto | null;
 
-  @ApiPropertyOptional({ type: () => LectureDto })
-  @IsOptional()
-  @Type(() => LectureDto)
-  previousLecture?: LectureDto | null;
+  // @ApiPropertyOptional({ type: () => LectureDto })
+  // @IsOptional()
+  // @Type(() => LectureDto)
+  // previousLecture?: LectureDto | null;
 }

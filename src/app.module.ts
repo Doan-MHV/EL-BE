@@ -25,8 +25,6 @@ import { CoursesModule } from './courses/courses.module';
 
 import { LecturesModule } from './lectures/lectures.module';
 
-import { EnrollsModule } from './enrolls/enrolls.module';
-
 import { AssignmentsModule } from './assignments/assignments.module';
 
 import { AssignmentMaterialsModule } from './assignment-materials/assignment-materials.module';
@@ -38,6 +36,7 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 import { QuizQuestionsModule } from './quiz-questions/quiz-questions.module';
 
 import { AssignmentSubmissionsModule } from './assignment-submissions/assignment-submissions.module';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
 
 const infrastructureDatabaseModule = [
   TypeOrmModule.forRootAsync({
@@ -53,13 +52,13 @@ const infrastructureDatabaseModule = [
 
 @Module({
   imports: [
+    EnrollmentsModule,
     AssignmentSubmissionsModule,
     QuizQuestionsModule,
     QuizzesModule,
     MaterialTypesModule,
     AssignmentMaterialsModule,
     AssignmentsModule,
-    EnrollsModule,
     LecturesModule,
     ConfigModule.forRoot({
       isGlobal: true,

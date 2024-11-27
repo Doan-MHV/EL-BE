@@ -19,6 +19,7 @@ import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { CourseEntity } from 'src/courses/infrastructure/persistence/relational/entities/course.entity';
 import { AssignmentSubmissionEntity } from '../../../../../assignment-submissions/infrastructure/persistence/relational/entities/assignment-submission.entity';
+import { EnrollmentEntity } from '../../../../../enrollments/infrastructure/persistence/relational/entities/enrollment.entity';
 
 @Entity({
   name: 'user',
@@ -68,6 +69,9 @@ export class UserEntity extends EntityRelationalHelper {
 
   @OneToMany(() => CourseEntity, (course) => course?.courseCreator)
   courses?: CourseEntity[];
+
+  @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment?.student)
+  enrollCourses?: CourseEntity[];
 
   @OneToMany(
     () => AssignmentSubmissionEntity,

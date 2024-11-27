@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Quizzes } from './domain/quizzes';
 import { CoursesService } from '../courses/courses.service';
 import { Course } from '../courses/domain/course';
+import { FilterQuizDto } from './dto/find-all-quizzes.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -37,11 +38,14 @@ export class QuizzesService {
   }
 
   findAllWithPagination({
+    filterOptions,
     paginationOptions,
   }: {
+    filterOptions?: FilterQuizDto | null;
     paginationOptions: IPaginationOptions;
   }) {
     return this.quizzesRepository.findAllWithPagination({
+      filterOptions,
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,

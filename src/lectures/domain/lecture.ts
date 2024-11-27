@@ -33,9 +33,14 @@ export class Lecture {
   course?: Course | null;
 
   @ApiProperty({
-    type: () => Lecture,
+    type: String,
   })
-  nextLecture?: Lecture | null;
+  previousLecture?: string | null;
+
+  @ApiProperty({
+    type: String,
+  })
+  nextLecture?: string | null;
 
   @ApiProperty()
   createdAt: Date;

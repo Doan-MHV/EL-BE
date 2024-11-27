@@ -14,7 +14,7 @@ import { AssignmentMaterialsEntity } from 'src/assignment-materials/infrastructu
 import { AssignmentSubmissionEntity } from '../../../../../assignment-submissions/infrastructure/persistence/relational/entities/assignment-submission.entity';
 
 @Entity({
-  name: 'assignmentSubmission',
+  name: 'assignment',
 })
 export class AssignmentsEntity extends EntityRelationalHelper {
   @PrimaryGeneratedColumn('uuid')

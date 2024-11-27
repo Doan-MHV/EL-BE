@@ -10,9 +10,11 @@ export abstract class CourseRepository {
   ): Promise<Course>;
 
   abstract findAllWithPagination({
+    userId,
     filterOptions,
     paginationOptions,
   }: {
+    userId?: string;
     filterOptions?: FilterCourseDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Course[]>;

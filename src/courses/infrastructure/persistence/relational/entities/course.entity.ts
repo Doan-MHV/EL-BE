@@ -13,6 +13,7 @@ import { UserEntity } from 'src/users/infrastructure/persistence/relational/enti
 import { LectureEntity } from 'src/lectures/infrastructure/persistence/relational/entities/lecture.entity';
 import { QuizzesEntity } from 'src/quizzes/infrastructure/persistence/relational/entities/quizzes.entity';
 import { AssignmentsEntity } from '../../../../../assignments/infrastructure/persistence/relational/entities/assignments.entity';
+import { EnrollmentEntity } from '../../../../../enrollments/infrastructure/persistence/relational/entities/enrollment.entity';
 
 @Entity({
   name: 'course',
@@ -44,6 +45,9 @@ export class CourseEntity extends EntityRelationalHelper {
 
   @OneToMany(() => QuizzesEntity, (quiz) => quiz?.course)
   courseQuizzes?: QuizzesEntity[];
+
+  @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment?.course)
+  enrollments?: EnrollmentEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

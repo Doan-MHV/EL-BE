@@ -13,6 +13,18 @@ export type QuizQuestionSchemaDocument =
   },
 })
 export class QuizQuestionSchemaClass extends EntityDocumentHelper {
+  @Prop({ required: true })
+  questionText: string;
+
+  @Prop({ type: [String], required: true })
+  options: string[];
+
+  @Prop({ required: true })
+  answer: string;
+
+  @Prop({ required: true })
+  quizId: string;
+
   @Prop({ default: now })
   createdAt: Date;
 

@@ -42,11 +42,14 @@ export class CoursesService {
   findAllWithPagination({
     filterOptions,
     paginationOptions,
+    userId,
   }: {
+    userId: string;
     filterOptions?: FilterCourseDto | null;
     paginationOptions: IPaginationOptions;
   }) {
     return this.courseRepository.findAllWithPagination({
+      userId,
       filterOptions,
       paginationOptions: {
         page: paginationOptions.page,

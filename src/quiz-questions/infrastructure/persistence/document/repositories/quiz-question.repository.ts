@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { QuizQuestionSchemaClass } from '../entities/quiz-question.schema';
 import { QuizQuestionRepository } from '../../quiz-question.repository';
 import { QuizQuestion } from '../../../../domain/quiz-question';
 import { QuizQuestionMapper } from '../mappers/quiz-question.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { FilterQuizQuestionsDto } from '../../../../dto/find-all-quiz-questions.dto';
 
 @Injectable()
 export class QuizQuestionDocumentRepository implements QuizQuestionRepository {
@@ -23,12 +24,21 @@ export class QuizQuestionDocumentRepository implements QuizQuestionRepository {
   }
 
   async findAllWithPagination({
+    filterOptions,
     paginationOptions,
   }: {
+    filterOptions?: FilterQuizQuestionsDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<QuizQuestion[]> {
+    const where: FilterQuery<QuizQuestionSchemaClass> = {};
+    if (filterOptions?.quizzes?.length) {
+      where['quizId'] = {
+        $in: filterOptions.quizzes.map((quizId) => quizId.toString()),
+      };
+    }
+
     const entityObjects = await this.quizQuestionModel
-      .find()
+      .find(where)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 

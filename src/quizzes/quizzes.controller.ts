@@ -61,6 +61,7 @@ export class QuizzesController {
 
     return infinityPagination(
       await this.quizzesService.findAllWithPagination({
+        filterOptions: query.filters,
         paginationOptions: {
           page,
           limit,

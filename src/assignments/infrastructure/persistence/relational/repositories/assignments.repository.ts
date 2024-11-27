@@ -43,6 +43,9 @@ export class AssignmentsRelationalRepository implements AssignmentsRepository {
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: where,
+      order: {
+        name: 'ASC',
+      },
     });
 
     return entities.map((entity) => AssignmentsMapper.toDomain(entity));

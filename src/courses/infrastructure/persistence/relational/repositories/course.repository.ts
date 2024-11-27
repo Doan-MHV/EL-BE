@@ -9,12 +9,15 @@ import { CourseMapper } from '../mappers/course.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { FilterCourseDto } from 'src/courses/dto/find-all-courses.dto';
 import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
+import { EnrollmentEntity } from '../../../../../enrollments/infrastructure/persistence/relational/entities/enrollment.entity';
 
 @Injectable()
 export class CourseRelationalRepository implements CourseRepository {
   constructor(
     @InjectRepository(CourseEntity)
     private readonly courseRepository: Repository<CourseEntity>,
+    @InjectRepository(EnrollmentEntity)
+    private readonly enrollmentRepository: Repository<EnrollmentEntity>,
   ) {}
 
   async create(data: Course): Promise<Course> {
@@ -28,7 +31,9 @@ export class CourseRelationalRepository implements CourseRepository {
   async findAllWithPagination({
     filterOptions,
     paginationOptions,
+    userId,
   }: {
+    userId?: string;
     filterOptions?: FilterCourseDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Course[]> {
@@ -47,7 +52,28 @@ export class CourseRelationalRepository implements CourseRepository {
       where: where,
     });
 
-    return entities.map((entity) => CourseMapper.toDomain(entity));
+    let courses = entities.map((entity) => CourseMapper.toDomain(entity));
+
+    if (userId) {
+      const enrolledCourses = await this.enrollmentRepository.find({
+        where: {
+          student: { id: userId },
+          course: In(courses.map((course) => course.id)),
+        },
+        relations: ['course'],
+      });
+
+      const enrolledCourseIds = new Set(
+        enrolledCourses.map((enrollment) => enrollment?.course?.id),
+      );
+
+      courses = courses.map((course) => ({
+        ...course,
+        hasEnrolled: enrolledCourseIds.has(course.id),
+      }));
+    }
+
+    return courses;
   }
 
   async findById(id: Course['id']): Promise<NullableType<Course>> {

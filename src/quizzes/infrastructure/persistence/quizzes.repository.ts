@@ -2,6 +2,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Quizzes } from '../../domain/quizzes';
+import { FilterQuizDto } from '../../dto/find-all-quizzes.dto';
 
 export abstract class QuizzesRepository {
   abstract create(
@@ -9,8 +10,10 @@ export abstract class QuizzesRepository {
   ): Promise<Quizzes>;
 
   abstract findAllWithPagination({
+    filterOptions,
     paginationOptions,
   }: {
+    filterOptions?: FilterQuizDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Quizzes[]>;
 

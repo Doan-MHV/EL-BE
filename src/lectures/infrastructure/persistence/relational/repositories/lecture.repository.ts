@@ -43,6 +43,9 @@ export class LectureRelationalRepository implements LectureRepository {
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: where,
+      order: {
+        lectureName: 'ASC',
+      },
     });
 
     return entities.map((entity) => LectureMapper.toDomain(entity));
@@ -53,7 +56,37 @@ export class LectureRelationalRepository implements LectureRepository {
       where: { id },
     });
 
-    return entity ? LectureMapper.toDomain(entity) : null;
+    if (!entity) return null;
+
+    const sortedLectures = await this.lectureRepository.find({
+      where: {
+        course: { id: entity?.course?.id },
+      },
+      order: {
+        lectureName: 'ASC',
+      },
+    });
+
+    let previousLecture: string | null = null;
+    let nextLecture: string | null = null;
+
+    for (let i = 0; i < sortedLectures.length; i++) {
+      if (sortedLectures[i].id === entity.id) {
+        if (i > 0) {
+          previousLecture = sortedLectures[i - 1]?.id ?? null;
+        }
+        if (i < sortedLectures.length - 1) {
+          nextLecture = sortedLectures[i + 1]?.id ?? null;
+        }
+        break;
+      }
+    }
+
+    const lectureDomain = LectureMapper.toDomain(entity);
+    lectureDomain.previousLecture = previousLecture;
+    lectureDomain.nextLecture = nextLecture;
+
+    return lectureDomain;
   }
 
   async findByIds(ids: Lecture['id'][]): Promise<Lecture[]> {

@@ -1,3 +1,20 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
+
 export class CreateQuizQuestionDto {
-  // Don't forget to use the class-validator decorators in the DTO properties.
+  @ApiProperty()
+  @IsNotEmpty()
+  questionText: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  options: string[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  answer: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  quizId: string;
 }

@@ -29,15 +29,6 @@ export class LectureMapper {
       course.id = domainEntity.course.id;
     }
 
-    let nextLecture: LectureEntity | undefined | null = undefined;
-
-    if (domainEntity.nextLecture) {
-      nextLecture = new LectureEntity();
-      nextLecture.id = domainEntity.nextLecture.id;
-    } else if (domainEntity.nextLecture === null) {
-      nextLecture = null;
-    }
-
     const persistenceEntity = new LectureEntity();
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;

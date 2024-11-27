@@ -4,6 +4,7 @@ import { UpdateQuizQuestionDto } from './dto/update-quiz-question.dto';
 import { QuizQuestionRepository } from './infrastructure/persistence/quiz-question.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { QuizQuestion } from './domain/quiz-question';
+import { FilterQuizQuestionsDto } from './dto/find-all-quiz-questions.dto';
 
 @Injectable()
 export class QuizQuestionsService {
@@ -12,25 +13,29 @@ export class QuizQuestionsService {
     private readonly quizQuestionRepository: QuizQuestionRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createQuizQuestionDto: CreateQuizQuestionDto,
-  ) {
+  async create(createQuizQuestionDto: CreateQuizQuestionDto) {
     // Do not remove comment below.
     // <creating-property />
 
     return this.quizQuestionRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      questionText: createQuizQuestionDto.questionText,
+      options: createQuizQuestionDto.options,
+      answer: createQuizQuestionDto.answer,
+      quizId: createQuizQuestionDto.quizId,
     });
   }
 
   findAllWithPagination({
+    filterOptions,
     paginationOptions,
   }: {
+    filterOptions?: FilterQuizQuestionsDto | null;
     paginationOptions: IPaginationOptions;
   }) {
     return this.quizQuestionRepository.findAllWithPagination({
+      filterOptions,
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,

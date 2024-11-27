@@ -33,6 +33,11 @@ export class Course {
   })
   courseAssignments?: Assignments[];
 
+  @ApiProperty({
+    type: () => Boolean,
+  })
+  hasEnrolled?: boolean;
+
   @ApiProperty()
   createdAt: Date;
 

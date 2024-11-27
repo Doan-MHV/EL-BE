@@ -7,8 +7,10 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -33,7 +35,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 
 @ApiTags('Courses')
 @ApiBearerAuth()
-@Roles(RoleEnum.teacher, RoleEnum.admin)
+@Roles(RoleEnum.teacher, RoleEnum.admin, RoleEnum.user)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'courses',
@@ -56,7 +58,9 @@ export class CoursesController {
   })
   async findAll(
     @Query() query: FindAllCoursesDto,
+    @Req() req: Request,
   ): Promise<InfinityPaginationResponseDto<Course>> {
+    // UserMapper.toDomain(req.user);
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -65,6 +69,7 @@ export class CoursesController {
 
     return infinityPagination(
       await this.coursesService.findAllWithPagination({
+        userId: req.user?.['id'],
         filterOptions: query?.filters,
         paginationOptions: {
           page,

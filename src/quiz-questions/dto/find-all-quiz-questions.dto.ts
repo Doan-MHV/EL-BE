@@ -1,6 +1,20 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { plainToInstance, Transform, Type } from 'class-transformer';
+
+export class FilterQuizQuestionsDto {
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  quizzes?: string[] | null;
+}
 
 export class FindAllQuizQuestionsDto {
   @ApiPropertyOptional()
@@ -14,4 +28,15 @@ export class FindAllQuizQuestionsDto {
   @IsNumber()
   @IsOptional()
   limit?: number;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @Transform(({ value }) =>
+    value
+      ? plainToInstance(FilterQuizQuestionsDto, JSON.parse(value))
+      : undefined,
+  )
+  @ValidateNested()
+  @Type(() => FilterQuizQuestionsDto)
+  filters?: FilterQuizQuestionsDto | null;
 }
