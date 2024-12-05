@@ -12,6 +12,7 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 import { CourseEntity } from 'src/courses/infrastructure/persistence/relational/entities/course.entity';
 import { AssignmentMaterialsEntity } from 'src/assignment-materials/infrastructure/persistence/relational/entities/assignment-materials.entity';
 import { AssignmentSubmissionEntity } from '../../../../../assignment-submissions/infrastructure/persistence/relational/entities/assignment-submission.entity';
+import { GradeEntity } from '../../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
 
 @Entity({
   name: 'assignment',
@@ -25,6 +26,9 @@ export class AssignmentsEntity extends EntityRelationalHelper {
 
   @Column({ type: String, nullable: false })
   description: string;
+
+  @Column({ type: Number, nullable: false })
+  maxGrade: number;
 
   @Column({ type: String })
   status?: string;
@@ -49,6 +53,9 @@ export class AssignmentsEntity extends EntityRelationalHelper {
     (assignmentSubmissionEntity) => assignmentSubmissionEntity?.assignment,
   )
   assignmentSubmissions?: AssignmentSubmissionEntity[];
+
+  @OneToMany(() => GradeEntity, (grade) => grade?.assignment)
+  grades?: GradeEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

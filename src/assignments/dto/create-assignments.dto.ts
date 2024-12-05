@@ -13,6 +13,10 @@ export class CreateAssignmentsDto {
   description: string;
 
   @ApiProperty()
+  @IsNotEmpty()
+  maxGrade: number;
+
+  @ApiProperty()
   @IsOptional()
   status?: string;
 

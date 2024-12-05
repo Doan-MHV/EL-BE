@@ -14,7 +14,7 @@ import { UsersService } from '../users/users.service';
 import { FileType } from '../files/domain/file';
 import { Assignments } from '../assignments/domain/assignments';
 import { User } from '../users/domain/user';
-import { FilterAssignmentMaterialsDto } from '../assignment-materials/dto/find-all-assignment-materials.dto';
+import { FilterAssignmentSubmissionsDto } from './dto/find-all-assignment-submissions.dto';
 
 @Injectable()
 export class AssignmentSubmissionsService {
@@ -82,7 +82,7 @@ export class AssignmentSubmissionsService {
     filterOptions,
     paginationOptions,
   }: {
-    filterOptions?: FilterAssignmentMaterialsDto | null;
+    filterOptions?: FilterAssignmentSubmissionsDto | null;
     paginationOptions: IPaginationOptions;
   }) {
     return this.assignmentSubmissionRepository.findAllWithPagination({

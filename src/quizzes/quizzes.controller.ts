@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
@@ -27,6 +28,7 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllQuizzesDto } from './dto/find-all-quizzes.dto';
+import { Request } from 'express';
 
 @ApiTags('Quizzes')
 @ApiBearerAuth()
@@ -52,6 +54,7 @@ export class QuizzesController {
   })
   async findAll(
     @Query() query: FindAllQuizzesDto,
+    @Req() req: Request,
   ): Promise<InfinityPaginationResponseDto<Quizzes>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
@@ -61,6 +64,7 @@ export class QuizzesController {
 
     return infinityPagination(
       await this.quizzesService.findAllWithPagination({
+        userId: req.user?.['id'],
         filterOptions: query.filters,
         paginationOptions: {
           page,

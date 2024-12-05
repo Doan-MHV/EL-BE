@@ -10,9 +10,11 @@ export abstract class QuizzesRepository {
   ): Promise<Quizzes>;
 
   abstract findAllWithPagination({
+    userId,
     filterOptions,
     paginationOptions,
   }: {
+    userId?: string;
     filterOptions?: FilterQuizDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Quizzes[]>;

@@ -37,6 +37,7 @@ import { QuizQuestionsModule } from './quiz-questions/quiz-questions.module';
 
 import { AssignmentSubmissionsModule } from './assignment-submissions/assignment-submissions.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { GradesModule } from './grades/grades.module';
 
 const infrastructureDatabaseModule = [
   TypeOrmModule.forRootAsync({
@@ -52,6 +53,7 @@ const infrastructureDatabaseModule = [
 
 @Module({
   imports: [
+    GradesModule,
     EnrollmentsModule,
     AssignmentSubmissionsModule,
     QuizQuestionsModule,

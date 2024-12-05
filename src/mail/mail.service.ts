@@ -166,4 +166,54 @@ export class MailService {
       },
     });
   }
+
+  async gradeFeedback(
+    mailData: MailData<{
+      typeName: string;
+      name: string;
+      instructorName: string;
+      instructorEmail: string;
+      feedback: string;
+      courseId: string;
+      courseName: string;
+      studentName: string;
+      grade: number;
+      maxGrade: number;
+    }>,
+  ): Promise<void> {
+    const url = new URL(
+      this.configService.getOrThrow('app.frontendDomain', {
+        infer: true,
+      }) + `/courses/${mailData.data.courseId}/grades`,
+    );
+
+    console.log(url);
+
+    await this.mailerService.sendMail({
+      to: mailData.to,
+      subject: `Your Grade Feedback For ${mailData.data.typeName}`,
+      text: `Hello World`,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'mail',
+        'mail-templates',
+        'feed-back.hbs',
+      ),
+      context: {
+        typeName: mailData.data.typeName,
+        name: mailData.data.name,
+        instructorName: mailData.data.instructorName,
+        instructorEmail: mailData.data.instructorEmail,
+        feedback: mailData.data.feedback,
+        gradePortalUrl: url,
+        courseName: mailData.data.courseName,
+        studentName: mailData.data.studentName,
+        grade: mailData.data.grade,
+        maxGrade: mailData.data.maxGrade,
+      },
+    });
+  }
 }

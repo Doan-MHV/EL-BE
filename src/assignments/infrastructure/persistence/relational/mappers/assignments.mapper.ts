@@ -10,6 +10,7 @@ export class AssignmentsMapper {
     domainEntity.id = raw.id;
     domainEntity.name = raw.name;
     domainEntity.description = raw.description;
+    domainEntity.maxGrade = raw.maxGrade;
     domainEntity.deadline = raw.deadline;
     domainEntity.status = raw.status;
     if (raw.course) {
@@ -42,6 +43,7 @@ export class AssignmentsMapper {
     persistenceEntity.name = domainEntity.name;
     persistenceEntity.description = domainEntity.description;
     persistenceEntity.deadline = domainEntity.deadline;
+    persistenceEntity.maxGrade = domainEntity.maxGrade;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.course = course;
     persistenceEntity.createdAt = domainEntity.createdAt;

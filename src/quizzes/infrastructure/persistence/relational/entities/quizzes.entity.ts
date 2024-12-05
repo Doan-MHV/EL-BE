@@ -5,11 +5,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { CourseEntity } from '../../../../../courses/infrastructure/persistence/relational/entities/course.entity';
+import { GradeEntity } from '../../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
 
 @Entity({
   name: 'quiz',
@@ -26,6 +28,9 @@ export class QuizzesEntity extends EntityRelationalHelper {
   })
   @JoinColumn({ name: 'courseId' })
   course?: CourseEntity;
+
+  @OneToMany(() => GradeEntity, (grade) => grade?.quiz)
+  grades?: GradeEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

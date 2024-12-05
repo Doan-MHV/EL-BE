@@ -19,6 +19,11 @@ export class Assignments {
   description: string;
 
   @ApiProperty({
+    type: Number,
+  })
+  maxGrade: number;
+
+  @ApiProperty({
     type: Date,
   })
   deadline: Date;
@@ -37,6 +42,11 @@ export class Assignments {
     type: () => [AssignmentMaterials],
   })
   assignmentsMaterials?: AssignmentMaterials[];
+
+  @ApiProperty({
+    type: Boolean,
+  })
+  hasSubmitted?: boolean;
 
   @ApiProperty()
   createdAt: Date;

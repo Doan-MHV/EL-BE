@@ -14,6 +14,7 @@ import { LectureEntity } from 'src/lectures/infrastructure/persistence/relationa
 import { QuizzesEntity } from 'src/quizzes/infrastructure/persistence/relational/entities/quizzes.entity';
 import { AssignmentsEntity } from '../../../../../assignments/infrastructure/persistence/relational/entities/assignments.entity';
 import { EnrollmentEntity } from '../../../../../enrollments/infrastructure/persistence/relational/entities/enrollment.entity';
+import { GradeEntity } from '../../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
 
 @Entity({
   name: 'course',
@@ -48,6 +49,9 @@ export class CourseEntity extends EntityRelationalHelper {
 
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment?.course)
   enrollments?: EnrollmentEntity[];
+
+  @OneToMany(() => GradeEntity, (grade) => grade?.course)
+  grades?: GradeEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

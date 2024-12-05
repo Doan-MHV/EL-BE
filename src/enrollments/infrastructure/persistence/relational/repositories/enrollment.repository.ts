@@ -96,14 +96,12 @@ export class EnrollmentRelationalRepository implements EnrollmentRepository {
 
   async findCoursesByStudentId({
     studentId,
-    filterOptions,
     paginationOptions,
   }: {
     studentId: string;
-    filterOptions?: FilterEnrollmentDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Course[]> {
-    const enrollments = await this.enrollmentRepository.find({
+    const entities = await this.enrollmentRepository.find({
       where: { student: { id: studentId } },
       relations: {
         course: true,
@@ -112,9 +110,9 @@ export class EnrollmentRelationalRepository implements EnrollmentRepository {
       take: paginationOptions.limit,
     });
 
-    return enrollments
-      .map((enrollment) =>
-        enrollment.course ? CourseMapper.toDomain(enrollment.course) : null,
+    return entities
+      .map((entities) =>
+        entities.course ? CourseMapper.toDomain(entities.course) : null,
       )
       .filter((course) => course !== null);
   }

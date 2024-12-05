@@ -2,7 +2,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { AssignmentSubmission } from '../../domain/assignment-submission';
-import { FilterAssignmentMaterialsDto } from '../../../assignment-materials/dto/find-all-assignment-materials.dto';
+import { FilterAssignmentSubmissionsDto } from '../../dto/find-all-assignment-submissions.dto';
 
 export abstract class AssignmentSubmissionRepository {
   abstract create(
@@ -13,7 +13,7 @@ export abstract class AssignmentSubmissionRepository {
     filterOptions,
     paginationOptions,
   }: {
-    filterOptions?: FilterAssignmentMaterialsDto | null;
+    filterOptions?: FilterAssignmentSubmissionsDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<AssignmentSubmission[]>;
 

@@ -17,6 +17,11 @@ export class Quizzes {
   })
   course?: Course | null;
 
+  @ApiProperty({
+    type: Boolean,
+  })
+  isTaken?: boolean;
+
   @ApiProperty()
   createdAt: Date;
 

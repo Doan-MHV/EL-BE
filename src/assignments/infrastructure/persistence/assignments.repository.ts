@@ -17,7 +17,10 @@ export abstract class AssignmentsRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Assignments[]>;
 
-  abstract findById(id: Assignments['id']): Promise<NullableType<Assignments>>;
+  abstract findById(
+    id: Assignments['id'],
+    userId?: string,
+  ): Promise<NullableType<Assignments>>;
 
   abstract findByIds(ids: Assignments['id'][]): Promise<Assignments[]>;
 

@@ -38,13 +38,16 @@ export class QuizzesService {
   }
 
   findAllWithPagination({
+    userId,
     filterOptions,
     paginationOptions,
   }: {
+    userId?: string;
     filterOptions?: FilterQuizDto | null;
     paginationOptions: IPaginationOptions;
   }) {
     return this.quizzesRepository.findAllWithPagination({
+      userId,
       filterOptions,
       paginationOptions: {
         page: paginationOptions.page,

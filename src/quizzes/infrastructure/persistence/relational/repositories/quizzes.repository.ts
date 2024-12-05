@@ -9,12 +9,15 @@ import { QuizzesMapper } from '../mappers/quizzes.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { CourseEntity } from '../../../../../courses/infrastructure/persistence/relational/entities/course.entity';
 import { FilterQuizDto } from '../../../../dto/find-all-quizzes.dto';
+import { GradeEntity } from '../../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
 
 @Injectable()
 export class QuizzesRelationalRepository implements QuizzesRepository {
   constructor(
     @InjectRepository(QuizzesEntity)
     private readonly quizzesRepository: Repository<QuizzesEntity>,
+    @InjectRepository(GradeEntity)
+    private readonly gradeRepository: Repository<GradeEntity>,
   ) {}
 
   async create(data: Quizzes): Promise<Quizzes> {
@@ -26,13 +29,16 @@ export class QuizzesRelationalRepository implements QuizzesRepository {
   }
 
   async findAllWithPagination({
+    userId,
     filterOptions,
     paginationOptions,
   }: {
+    userId?: string;
     filterOptions?: FilterQuizDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Quizzes[]> {
     const where: FindOptionsWhere<QuizzesEntity> = {};
+
     if (filterOptions?.courses?.length) {
       where.course = filterOptions.courses.map((course: CourseEntity) => ({
         id: course.id,
@@ -43,9 +49,30 @@ export class QuizzesRelationalRepository implements QuizzesRepository {
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: where,
+      order: {
+        title: 'ASC',
+      },
     });
 
-    return entities.map((entity) => QuizzesMapper.toDomain(entity));
+    return await Promise.all(
+      entities.map(async (entity) => {
+        // Check if there's a grade for the quiz and the specified userId, indicating it has been "taken" by this user
+        const gradeCount = await this.gradeRepository.count({
+          where: {
+            quiz: { id: entity.id },
+            student: { id: userId }, // Add userId to the query condition
+          },
+        });
+
+        const isTaken = gradeCount > 0;
+
+        // Map the quiz entity to its domain model with the isTaken flag
+        const domainEntity = QuizzesMapper.toDomain(entity);
+        domainEntity.isTaken = isTaken;
+
+        return domainEntity;
+      }),
+    );
   }
 
   async findById(id: Quizzes['id']): Promise<NullableType<Quizzes>> {

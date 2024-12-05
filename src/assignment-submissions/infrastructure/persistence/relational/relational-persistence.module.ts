@@ -3,9 +3,12 @@ import { AssignmentSubmissionRepository } from '../assignment-submission.reposit
 import { AssignmentSubmissionRelationalRepository } from './repositories/assignment-submission.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AssignmentSubmissionEntity } from './entities/assignment-submission.entity';
+import { GradeEntity } from '../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AssignmentSubmissionEntity])],
+  imports: [
+    TypeOrmModule.forFeature([AssignmentSubmissionEntity, GradeEntity]),
+  ],
   providers: [
     {
       provide: AssignmentSubmissionRepository,

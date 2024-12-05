@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AssignmentsService } from './assignments.service';
@@ -27,6 +28,7 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllAssignmentsDto } from './dto/find-all-assignments.dto';
+import { Request } from 'express';
 
 @ApiTags('Assignments')
 @ApiBearerAuth()
@@ -80,8 +82,8 @@ export class AssignmentsController {
   @ApiOkResponse({
     type: Assignments,
   })
-  findById(@Param('id') id: string) {
-    return this.assignmentsService.findById(id);
+  findById(@Param('id') id: string, @Req() req: Request) {
+    return this.assignmentsService.findById(id, req.user?.['id']);
   }
 
   @Patch(':id')

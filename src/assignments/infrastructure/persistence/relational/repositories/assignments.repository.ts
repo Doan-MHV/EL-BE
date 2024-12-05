@@ -9,12 +9,15 @@ import { AssignmentsMapper } from '../mappers/assignments.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { CourseEntity } from 'src/courses/infrastructure/persistence/relational/entities/course.entity';
 import { FilterAssignmentDto } from 'src/assignments/dto/find-all-assignments.dto';
+import { AssignmentSubmission } from '../../../../../assignment-submissions/domain/assignment-submission';
 
 @Injectable()
 export class AssignmentsRelationalRepository implements AssignmentsRepository {
   constructor(
     @InjectRepository(AssignmentsEntity)
     private readonly assignmentsRepository: Repository<AssignmentsEntity>,
+    @InjectRepository(AssignmentsEntity)
+    private readonly assignmentSubmissionsRepository: Repository<AssignmentSubmission>,
   ) {}
 
   async create(data: Assignments): Promise<Assignments> {
@@ -51,12 +54,30 @@ export class AssignmentsRelationalRepository implements AssignmentsRepository {
     return entities.map((entity) => AssignmentsMapper.toDomain(entity));
   }
 
-  async findById(id: Assignments['id']): Promise<NullableType<Assignments>> {
+  async findById(
+    id: Assignments['id'],
+    userId?: string,
+  ): Promise<NullableType<Assignments>> {
     const entity = await this.assignmentsRepository.findOne({
       where: { id },
+      relations: {
+        assignmentSubmissions: true,
+      },
     });
 
-    return entity ? AssignmentsMapper.toDomain(entity) : null;
+    if (!entity) {
+      return null;
+    }
+
+    const hasSubmitted = entity?.assignmentSubmissions?.some(
+      (submission) => submission.student?.id === userId,
+    );
+
+    const domainAssignment = AssignmentsMapper.toDomain(entity);
+
+    domainAssignment.hasSubmitted = hasSubmitted;
+
+    return domainAssignment;
   }
 
   async findByIds(ids: Assignments['id'][]): Promise<Assignments[]> {

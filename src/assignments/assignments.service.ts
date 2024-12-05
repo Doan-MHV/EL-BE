@@ -34,6 +34,7 @@ export class AssignmentsService {
       // <creating-property-payload />
       name: createAssignmentsDto.name,
       description: createAssignmentsDto.description,
+      maxGrade: createAssignmentsDto.maxGrade,
       deadline: createAssignmentsDto.deadline,
       status: createAssignmentsDto.status,
       course: course,
@@ -56,8 +57,8 @@ export class AssignmentsService {
     });
   }
 
-  findById(id: Assignments['id']) {
-    return this.assignmentsRepository.findById(id);
+  findById(id: Assignments['id'], userId?: string) {
+    return this.assignmentsRepository.findById(id, userId);
   }
 
   findByIds(ids: Assignments['id'][]) {

@@ -7,8 +7,11 @@ import { AssignmentSubmission } from '../../../../domain/assignment-submission';
 import { AssignmentSubmissionRepository } from '../../assignment-submission.repository';
 import { AssignmentSubmissionMapper } from '../mappers/assignment-submission.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import { FilterAssignmentMaterialsDto } from '../../../../../assignment-materials/dto/find-all-assignment-materials.dto';
 import { AssignmentsEntity } from '../../../../../assignments/infrastructure/persistence/relational/entities/assignments.entity';
+import { FilterAssignmentSubmissionsDto } from '../../../../dto/find-all-assignment-submissions.dto';
+import { GradeEntity } from '../../../../../grades/infrastructure/persistence/relational/entities/grade.entity';
+import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { GradeMapper } from '../../../../../grades/infrastructure/persistence/relational/mappers/grade.mapper';
 
 @Injectable()
 export class AssignmentSubmissionRelationalRepository
@@ -17,6 +20,8 @@ export class AssignmentSubmissionRelationalRepository
   constructor(
     @InjectRepository(AssignmentSubmissionEntity)
     private readonly assignmentSubmissionRepository: Repository<AssignmentSubmissionEntity>,
+    @InjectRepository(GradeEntity)
+    private readonly gradeRepository: Repository<GradeEntity>,
   ) {}
 
   async create(data: AssignmentSubmission): Promise<AssignmentSubmission> {
@@ -31,10 +36,11 @@ export class AssignmentSubmissionRelationalRepository
     filterOptions,
     paginationOptions,
   }: {
-    filterOptions: FilterAssignmentMaterialsDto | null;
+    filterOptions: FilterAssignmentSubmissionsDto | null;
     paginationOptions: IPaginationOptions;
   }): Promise<AssignmentSubmission[]> {
     const where: FindOptionsWhere<AssignmentSubmissionEntity> = {};
+
     if (filterOptions?.assignments?.length) {
       where.assignment = filterOptions.assignments.map(
         (assignment: AssignmentsEntity) => ({
@@ -43,15 +49,38 @@ export class AssignmentSubmissionRelationalRepository
       );
     }
 
+    if (filterOptions?.students?.length) {
+      where.student = filterOptions.students.map((student: UserEntity) => ({
+        id: student.id,
+      }));
+    }
+
+    // Fetch the assignment submissions
     const entities = await this.assignmentSubmissionRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: where,
+      relations: ['assignment', 'student'], // Load relationships needed for grade checking
     });
 
-    return entities.map((entity) =>
-      AssignmentSubmissionMapper.toDomain(entity),
+    // Check for grades using the submission data
+    const submissionsWithGrades = await Promise.all(
+      entities.map(async (entity) => {
+        const grade = await this.gradeRepository.findOne({
+          where: {
+            assignment: { id: entity.assignment?.id },
+            student: { id: entity.student?.id },
+          },
+        });
+        const isGraded = !!grade;
+        const domainEntity = AssignmentSubmissionMapper.toDomain(entity);
+        domainEntity.isGraded = isGraded;
+        domainEntity.grade = isGraded ? GradeMapper.toDomain(grade) : null;
+        return domainEntity;
+      }),
     );
+
+    return submissionsWithGrades;
   }
 
   async findById(
@@ -59,9 +88,30 @@ export class AssignmentSubmissionRelationalRepository
   ): Promise<NullableType<AssignmentSubmission>> {
     const entity = await this.assignmentSubmissionRepository.findOne({
       where: { id },
+      relations: {
+        assignment: true,
+        student: true,
+      },
     });
 
-    return entity ? AssignmentSubmissionMapper.toDomain(entity) : null;
+    if (!entity) {
+      return null;
+    }
+
+    // Look for the grade of the submission
+    const gradeEntity = await this.gradeRepository.findOne({
+      where: {
+        assignment: { id: entity.assignment?.id },
+        student: { id: entity.student?.id },
+      },
+    });
+
+    const isGraded = !!gradeEntity;
+    const domainEntity = AssignmentSubmissionMapper.toDomain(entity);
+    domainEntity.isGraded = isGraded;
+    domainEntity.grade = isGraded ? GradeMapper.toDomain(gradeEntity) : null; // Convert gradeEntity to its domain model
+
+    return domainEntity;
   }
 
   async findByIds(

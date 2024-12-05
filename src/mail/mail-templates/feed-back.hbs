@@ -3,28 +3,41 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=">
-  <title>[no-reply]{{title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grade Feedback from {{instructorName}}</title>
 </head>
 
-<body style="margin:0;font-family:arial">
-<table style="border:0;width:100%">
-  <tr style="background:#eeeeee">
-    <td style="padding:20px;color:#808080;text-align:center;font-size:40px;font-weight:600">
-      {{app_name}}
+<body style="margin: 0; font-family: Arial, sans-serif;">
+<table style="border: 0; width: 100%;">
+  <tr style="background: #f2f2f2;">
+    <td style="padding: 20px; text-align: center; font-size: 36px; font-weight: 700; color: #333;">
+      {{courseName}}
     </td>
   </tr>
   <tr>
-    <td style="padding:20px;color:#808080;font-size:16px;font-weight:100">
-      {{text1}}<br>
-      {{text2}}<br>
-      {{text3}}
+    <td style="padding: 20px; font-size: 16px; color: #555;">
+      <p>Dear {{studentName}},</p>
+      <p>Your grade for the {{typeName}} "{{name}}" is now available. Below is the detailed feedback
+        from {{instructorName}}:</p>
+      <blockquote style="margin: 20px 0; padding: 10px; border-left: 5px solid #00838f; background-color: #fafafa;">
+        {{feedback}}
+      </blockquote>
+      <blockquote style="margin: 20px 0; padding: 10px; border-left: 5px solid #ff9800; background-color: #fafafa;">
+        <strong>Grade: {{grade}} / {{maxGrade}}</strong>
+      </blockquote>
     </td>
   </tr>
   <tr>
-    <td style="text-align:center">
-      <a href="{{url}}"
-         style="display:inline-block;padding:20px;background:#00838f;text-decoration:none;color:#ffffff">{{actionTitle}}</a>
+    <td style="text-align: center; padding: 20px;">
+      <a href="{{gradePortalUrl}}"
+         style="display: inline-block; padding: 10px 20px; background: #4caf50; border-radius: 5px; color: #ffffff; text-decoration: none;">
+        View Your Complete Grade Here
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 20px; font-size: 14px; text-align: center; color: #999;">
+      If you have any questions, feel free to contact {{instructorEmail}}.
     </td>
   </tr>
 </table>
